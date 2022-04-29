@@ -82,7 +82,7 @@ def get_diff(x):
     # 
     c1=x['QTY'].shift(1)+x['Reorder QTY'].shift(1)-x['QTY']-x['Reorder QTY']
     c1=c1.map(lambda x:x if x>0 else 0) # 如果x<0，则返回0，原因是0的时候，不能减去
-    # print(c1)
+
     
     return c1 
     
@@ -90,11 +90,25 @@ def get_diff(x):
 
 # 运行step1
 def get_single_part(df):
-    
+    # TODO 时间列名有问题
     # df下一行(QTY+Reorder QTY)减去df上一行(QTY+Reorder QTY)
     res_all=df.groupby(['Dealer No.','Dealer Name','Parts Number']).apply(get_diff)
     # pandas将'时间'列转换成行
-    res_all=res_all.unstack('时间') #! 这是公司电脑的版本
+    # ?这里有问题 有可能是s,df 不一样
+    # 判断res_all是否是series,转换成dataframe
+    if isinstance(res_all,pd.Series):
+        
+        res_all=res_all.to_frame()
+
+    
+    # print(res_all.columns.name,res_all.columns)
+    
+    if not res_all.columns.name: # 如果没有列名，则添加列名
+        
+        res_all=res_all.unstack('时间') #! 这是公司电脑的版本
+        # 取消多重索引-问题解决
+        res_all.columns=res_all.columns.droplevel(0)
+        # print(res_all.columns.names)
     # 添加汇总列
     res_all['汇总']=res_all.sum(axis=1) #! 单一数据可使用
 
