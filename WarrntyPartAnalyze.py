@@ -101,7 +101,7 @@ def get_single_part(df):
     # 转换列名称为日期2022-4-28 00:00:00 为2022-4-28
     res_all.columns=res_all.columns.map(lambda x:str(x)[:10]) #! 单一数据可使用
 
-    print(res_all)
+    # print(res_all) #! 将结果输出到控制台-取消
     # 生成报表
     # todo 修正了输出 PartNum_16137404081-2022-04-28.xlsx
     # import datetime # 已经在上一步中导入
