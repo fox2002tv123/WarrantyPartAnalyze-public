@@ -1,13 +1,3 @@
-'''
-Author: bob
-Date: 2022-04-28 22:20:25
-LastEditors: bob
-LastEditTime: 2022-04-28 22:20:26
-FilePath: \WarrantyPartAnalyze-master\WarrntyPartAnalyze.py
-Description: 此文件用于分析配件数据
-
-Copyright (c) 2022 by bob, All Rights Reserved. 
-'''
 # %%
 # 获取data文件夹下的所有文件xlsx文件
 import glob
@@ -103,13 +93,15 @@ def get_single_part(df):
     
     # df下一行(QTY+Reorder QTY)减去df上一行(QTY+Reorder QTY)
     res_all=df.groupby(['Dealer No.','Dealer Name','Parts Number']).apply(get_diff)
+    # pandas将'时间'列转换成行
+    res_all=res_all.unstack('时间') #! 这是公司电脑的版本
     # 添加汇总列
     res_all['汇总']=res_all.sum(axis=1) #! 单一数据可使用
 
     # 转换列名称为日期2022-4-28 00:00:00 为2022-4-28
     res_all.columns=res_all.columns.map(lambda x:str(x)[:10]) #! 单一数据可使用
 
-    res_all
+    print(res_all)
     # 生成报表
     # todo 修正了输出 PartNum_16137404081-2022-04-28.xlsx
     # import datetime # 已经在上一步中导入
